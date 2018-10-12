@@ -499,11 +499,11 @@ for i, line in enumerate(test_feature_lines):
 ### data prepare
 #######################################################################################
 
-tree = Vfdt([i for i in range(feature_dim)] , delta=0.01, nmin=100, tau=0.5)
+tree = Vfdt([i for i in range(feature_dim)] , delta=0.01, nmin=10, tau=0.5)
 print('initialize tree')
 t1 = time.time()
-##for i in range(train_mat.shape[0]):
-for i in range(1000):
+for i in range(7000):
+#for i in range(train_mat.shape[0]):
     if i % 100 == 0:
         t2 = time.time()
         print('finish update ' + str(i) + '-th data, cost ' + str(t2 - t1)[:4] + ' seconds')
@@ -511,8 +511,8 @@ for i in range(1000):
     tree.update(train_mat[i,:-1], train_mat[i,-1])
 
 
-y_pred = tree.predict(test_mat[:1000,:-1])
-y_test = test_mat[:1000,-1]
+y_pred = tree.predict(test_mat[:,:-1])
+y_test = test_mat[:,-1]
 #print(accuracy_score(y_test, y_pred))
 y_test = list(y_test)
 y_pred = list(y_pred)
@@ -521,7 +521,7 @@ print(roc_auc_score(y_test, y_pred))
 leaf_node_set = defaultdict(lambda : [])
 
 #for i in range(train_mat.shape[0]):
-for i in range(1000):
+for i in range(7000):
     root_node = tree.root
     _, indx = root_node.sort_example2(train_mat[i,:-1], '')
     leaf_node_set[indx] += [i]
